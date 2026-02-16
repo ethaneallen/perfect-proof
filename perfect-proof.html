@@ -76,12 +76,14 @@
         }
         
         input[type="number"] {
+            appearance: textfield;
             -moz-appearance: textfield;
             text-align: right;
         }
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
+            appearance: none;
             margin: 0;
         }
         .input-group {
@@ -171,12 +173,14 @@
         
         /* Preset buttons */
         .preset-btn {
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 6px 10px;
+            font-size: 12px;
             border-radius: 4px;
             background-color: rgba(160, 82, 45, 0.3);
             border: 1px solid rgba(160, 82, 45, 0.5);
             transition: all 0.2s;
+            flex: 1;
+            min-width: 0;
         }
         
         .preset-btn:hover {
@@ -222,9 +226,9 @@
         }
     </style>
 </head>
-<body class="font-sans min-h-screen flex items-center justify-center p-4">
+<body class="font-sans min-h-screen flex items-center justify-center p-3 sm:p-4">
 
-    <div class="card w-full max-w-sm p-6 rounded-xl text-white relative">
+    <div class="card w-full max-w-md p-4 sm:p-6 rounded-xl text-white relative">
         <!-- Theme Toggle -->
         <div id="themeToggle" class="theme-toggle" title="Toggle light/dark mode">
             <div class="theme-toggle-slider"></div>
@@ -245,25 +249,25 @@
         </div>
 
         <!-- Input Fields -->
-        <div class="space-y-4 mb-6">
+        <div class="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
             
             <!-- 1. Amount of Whiskey -->
-            <div class="input-group bg-gray-700 rounded-lg p-3">
-                <div class="flex justify-between items-center mb-1">
-                    <label for="whiskeyVolume" class="text-sm font-medium text-gray-300">Amount of Whiskey (<span id="inputUnitLabel">fl. oz.</span>)</label>
-                    <button id="inputUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200">
+            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+                <div class="flex justify-between items-start gap-2 mb-1">
+                    <label for="whiskeyVolume" class="text-xs sm:text-sm font-medium text-gray-300">Amount of Whiskey (<span id="inputUnitLabel">fl. oz.</span>)</label>
+                    <button id="inputUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200 whitespace-nowrap">
                         Switch to ml
                     </button>
                 </div>
                 <input type="number" id="whiskeyVolume" value="2" min="0.01" step="0.01"
-                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500"
                        placeholder="e.g., 2.0" aria-label="Amount of Whiskey">
             </div>
 
             <!-- 2. Bottle Proof -->
-            <div class="input-group bg-gray-700 rounded-lg p-3">
-                <div class="flex justify-between items-center mb-1">
-                    <label for="bottleProof" class="text-sm font-medium text-gray-300">Bottle Proof (Initial Proof)
+            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+                <div class="flex justify-between items-center gap-2 mb-1">
+                    <label for="bottleProof" class="text-xs sm:text-sm font-medium text-gray-300">Bottle Proof
                         <span class="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -271,33 +275,33 @@
                             <span class="tooltiptext">Proof = ABV × 2. For example, 100 proof = 50% ABV</span>
                         </span>
                     </label>
-                    <span id="bottleABV" class="text-xs text-gray-400">55% ABV</span>
+                    <span id="bottleABV" class="text-xs text-gray-400 whitespace-nowrap">55% ABV</span>
                 </div>
                 <input type="number" id="bottleProof" value="110" min="1" step="1"
-                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500 mb-2"
                        placeholder="e.g., 110" aria-label="Bottle Proof">
-                <div class="flex gap-1 mt-2">
-                    <button class="preset-btn text-white" data-proof="100" data-target="bottleProof">100</button>
-                    <button class="preset-btn text-white" data-proof="110" data-target="bottleProof">110</button>
-                    <button class="preset-btn text-white" data-proof="120" data-target="bottleProof">120</button>
-                    <button class="preset-btn text-white" data-proof="127" data-target="bottleProof">127</button>
+                <div class="flex gap-1 flex-wrap">
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="100" data-target="bottleProof">100</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="110" data-target="bottleProof">110</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="120" data-target="bottleProof">120</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="127" data-target="bottleProof">127</button>
                 </div>
             </div>
 
             <!-- 3. Desired Proof -->
-            <div class="input-group bg-gray-700 rounded-lg p-3">
-                <div class="flex justify-between items-center mb-1">
-                    <label for="desiredProof" class="text-sm font-medium text-gray-300">Desired Proof (Target Proof)</label>
-                    <span id="desiredABV" class="text-xs text-gray-400">47.5% ABV</span>
+            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+                <div class="flex justify-between items-center gap-2 mb-1">
+                    <label for="desiredProof" class="text-xs sm:text-sm font-medium text-gray-300">Desired Proof</label>
+                    <span id="desiredABV" class="text-xs text-gray-400 whitespace-nowrap">47.5% ABV</span>
                 </div>
                 <input type="number" id="desiredProof" value="95" min="1" step="1"
-                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500 mb-2"
                        placeholder="e.g., 95" aria-label="Desired Proof">
-                <div class="flex gap-1 mt-2">
-                    <button class="preset-btn text-white" data-proof="80" data-target="desiredProof">80</button>
-                    <button class="preset-btn text-white" data-proof="90" data-target="desiredProof">90</button>
-                    <button class="preset-btn text-white" data-proof="95" data-target="desiredProof">95</button>
-                    <button class="preset-btn text-white" data-proof="100" data-target="desiredProof">100</button>
+                <div class="flex gap-1 flex-wrap">
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="80" data-target="desiredProof">80</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="90" data-target="desiredProof">90</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="95" data-target="desiredProof">95</button>
+                    <button class="preset-btn text-white text-xs sm:text-sm" data-proof="100" data-target="desiredProof">100</button>
                 </div>
             </div>
         </div>
