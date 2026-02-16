@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Proof Calculator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🥃</text></svg>">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'whiskey': '#964B00',
+                        'bourbon': '#A0522D',
+                        'water': '#ADD8E6',
+                        'dark-bg': '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for aesthetic enhancements */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-card: linear-gradient(135deg, #1f2937, #111827);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.light-mode {
+            --bg-primary: #f8fafc;
+            --bg-card: linear-gradient(135deg, #ffffff, #f1f5f9);
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            transition: background-color 0.3s ease;
+        }
+        
+        .card {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .card {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light-mode input,
+        .light-mode label,
+        .light-mode h1,
+        .light-mode p {
+            color: var(--text-primary);
+        }
+        
+        .light-mode .text-gray-400,
+        .light-mode .text-gray-300 {
+            color: var(--text-secondary) !important;
+        }
+        
+        .light-mode .bg-gray-700 {
+            background-color: #e2e8f0 !important;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+            text-align: right;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-group {
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within {
+            box-shadow: 0 0 0 3px rgba(160, 82, 45, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Ratio bar */
+        .ratio-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: rgba(173, 216, 230, 0.3);
+        }
+        
+        .ratio-whiskey {
+            height: 100%;
+            background-color: #A0522D;
+            float: left;
+            transition: width 0.4s ease;
+        }
+        
+        /* Preset buttons */
+        .preset-btn {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            background-color: rgba(160, 82, 45, 0.3);
+            border: 1px solid rgba(160, 82, 45, 0.5);
+            transition: all 0.2s;
+        }
+        
+        .preset-btn:hover {
+            background-color: rgba(160, 82, 45, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .light-mode .preset-btn {
+            background-color: rgba(160, 82, 45, 0.2);
+            color: #1f2937;
+        }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .theme-toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .theme-toggle.active {
+            background-color: #A0522D;
+        }
+        
+        .theme-toggle.active .theme-toggle-slider {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="card w-full max-w-sm p-6 rounded-xl text-white relative">
+        <!-- Theme Toggle -->
+        <div id="themeToggle" class="theme-toggle" title="Toggle light/dark mode">
+            <div class="theme-toggle-slider"></div>
+        </div>
+        
+        <!-- Title and Icon -->
+        <div class="flex flex-col items-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-bourbon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
+                <path d="M12 16v4"></path>
+                <path d="M8 20h8"></path>
+                <path d="M6 10a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"></path>
+                <path d="M12 4v4"></path>
+                <path d="M10 6h4"></path>
+            </svg>
+            <h1 class="text-3xl font-bold mt-2 text-white">Perfect Proof</h1>
+            <p class="text-sm text-gray-400">Whiskey Dilution Calculator</p>
+        </div>
+
+        <!-- Input Fields -->
+        <div class="space-y-4 mb-6">
+            
+            <!-- 1. Amount of Whiskey -->
+            <div class="input-group bg-gray-700 rounded-lg p-3">
+                <div class="flex justify-between items-center mb-1">
+                    <label for="whiskeyVolume" class="text-sm font-medium text-gray-300">Amount of Whiskey (<span id="inputUnitLabel">fl. oz.</span>)</label>
+                    <button id="inputUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200">
+                        Switch to ml
+                    </button>
+                </div>
+                <input type="number" id="whiskeyVolume" value="2" min="0.01" step="0.01"
+                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       placeholder="e.g., 2.0" aria-label="Amount of Whiskey">
+            </div>
+
+            <!-- 2. Bottle Proof -->
+            <div class="input-group bg-gray-700 rounded-lg p-3">
+                <div class="flex justify-between items-center mb-1">
+                    <label for="bottleProof" class="text-sm font-medium text-gray-300">Bottle Proof (Initial Proof)
+                        <span class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="tooltiptext">Proof = ABV × 2. For example, 100 proof = 50% ABV</span>
+                        </span>
+                    </label>
+                    <span id="bottleABV" class="text-xs text-gray-400">55% ABV</span>
+                </div>
+                <input type="number" id="bottleProof" value="110" min="1" step="1"
+                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       placeholder="e.g., 110" aria-label="Bottle Proof">
+                <div class="flex gap-1 mt-2">
+                    <button class="preset-btn text-white" data-proof="100" data-target="bottleProof">100</button>
+                    <button class="preset-btn text-white" data-proof="110" data-target="bottleProof">110</button>
+                    <button class="preset-btn text-white" data-proof="120" data-target="bottleProof">120</button>
+                    <button class="preset-btn text-white" data-proof="127" data-target="bottleProof">127</button>
+                </div>
+            </div>
+
+            <!-- 3. Desired Proof -->
+            <div class="input-group bg-gray-700 rounded-lg p-3">
+                <div class="flex justify-between items-center mb-1">
+                    <label for="desiredProof" class="text-sm font-medium text-gray-300">Desired Proof (Target Proof)</label>
+                    <span id="desiredABV" class="text-xs text-gray-400">47.5% ABV</span>
+                </div>
+                <input type="number" id="desiredProof" value="95" min="1" step="1"
+                       class="w-full bg-transparent text-xl font-semibold focus:outline-none placeholder-gray-500"
+                       placeholder="e.g., 95" aria-label="Desired Proof">
+                <div class="flex gap-1 mt-2">
+                    <button class="preset-btn text-white" data-proof="80" data-target="desiredProof">80</button>
+                    <button class="preset-btn text-white" data-proof="90" data-target="desiredProof">90</button>
+                    <button class="preset-btn text-white" data-proof="95" data-target="desiredProof">95</button>
+                    <button class="preset-btn text-white" data-proof="100" data-target="desiredProof">100</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button id="calculateButton"
+                class="w-full py-3 bg-bourbon hover:bg-whiskey text-white font-bold rounded-lg transition duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-bourbon/50">
+            Calculate Water Needed
+        </button>
+
+        <!-- Result Display -->
+        <div id="resultContainer" class="mt-6 p-4 rounded-lg border-2 border-water/50 bg-water/10 text-center hidden slide-in">
+            <!-- Ratio Visualization -->
+            <div class="mb-3">
+                <div class="flex justify-between text-xs text-gray-300 mb-1">
+                    <span>🥃 Whiskey: <span id="ratioWhiskeyPercent">56%</span></span>
+                    <span>💧 Water: <span id="ratioWaterPercent">44%</span></span>
+                </div>
+                <div class="ratio-bar">
+                    <div id="ratioWhiskeyBar" class="ratio-whiskey" style="width: 56%"></div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-300 mb-1">Add this much water:</p>
+            <p id="waterResult" class="text-4xl font-extrabold text-water">0.00</p>
+            <div class="flex justify-center items-center gap-2 mt-1">
+                <p class="text-md font-medium text-gray-300"><span id="resultUnitLabel">fluid ounces (fl. oz.)</span></p>
+                <button id="resultUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200">
+                    Switch to ml
+                </button>
+            </div>
+            
+            <!-- Final Volume Display -->
+            <div class="mt-3 pt-3 border-t border-water/30">
+                <p class="text-xs text-gray-300 mb-1">Final Volume: <span id="finalVolume" class="font-bold text-white">2.32</span> <span id="finalVolumeUnit">fl. oz.</span></p>
+                <p class="text-xs text-gray-300">Final Strength: <span id="finalProof" class="font-bold text-white">95</span> proof (<span id="finalABV">47.5%</span> ABV)</p>
+            </div>
+            
+            <!-- Copy Button -->
+            <button id="copyButton" class="mt-3 px-4 py-2 bg-water/20 hover:bg-water/30 text-white text-sm rounded transition duration-200 flex items-center justify-center mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy Result
+            </button>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorBox" class="mt-4 p-3 bg-red-800 rounded-lg text-white text-sm hidden" role="alert">
+            <!-- Error message will be inserted here -->
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const volInput = document.getElementById('whiskeyVolume');
+            const bottleProofInput = document.getElementById('bottleProof');
+            const desiredProofInput = document.getElementById('desiredProof');
+            const calculateButton = document.getElementById('calculateButton');
+            const resultContainer = document.getElementById('resultContainer');
+            const waterResult = document.getElementById('waterResult');
+            const errorBox = document.getElementById('errorBox');
+            const inputUnitToggle = document.getElementById('inputUnitToggle');
+            const inputUnitLabel = document.getElementById('inputUnitLabel');
+            const resultUnitToggle = document.getElementById('resultUnitToggle');
+            const resultUnitLabel = document.getElementById('resultUnitLabel');
+            const themeToggle = document.getElementById('themeToggle');
+            const bottleABV = document.getElementById('bottleABV');
+            const desiredABV = document.getElementById('desiredABV');
+            const finalVolume = document.getElementById('finalVolume');
+            const finalVolumeUnit = document.getElementById('finalVolumeUnit');
+            const finalProof = document.getElementById('finalProof');
+            const finalABV = document.getElementById('finalABV');
+            const ratioWhiskeyBar = document.getElementById('ratioWhiskeyBar');
+            const ratioWhiskeyPercent = document.getElementById('ratioWhiskeyPercent');
+            const ratioWaterPercent = document.getElementById('ratioWaterPercent');
+            const copyButton = document.getElementById('copyButton');
+            
+            // Unit state: 'floz' or 'ml'
+            let inputUnit = 'floz';
+            let resultUnit = 'floz';
+            const FLOZ_TO_ML = 29.5735;
+            
+            // Load preferences from localStorage
+            function loadPreferences() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-mode');
+                    themeToggle.classList.add('active');
+                }
+                
+                const savedInputUnit = localStorage.getItem('inputUnit');
+                if (savedInputUnit) inputUnit = savedInputUnit;
+                
+                const savedResultUnit = localStorage.getItem('resultUnit');
+                if (savedResultUnit) resultUnit = savedResultUnit;
+                
+                const savedWhiskeyVolume = localStorage.getItem('whiskeyVolume');
+                if (savedWhiskeyVolume) volInput.value = savedWhiskeyVolume;
+                
+                const savedBottleProof = localStorage.getItem('bottleProof');
+                if (savedBottleProof) bottleProofInput.value = savedBottleProof;
+                
+                const savedDesiredProof = localStorage.getItem('desiredProof');
+                if (savedDesiredProof) desiredProofInput.value = savedDesiredProof;
+                
+                // Update UI based on saved units
+                if (inputUnit === 'ml') {
+                    inputUnitLabel.textContent = 'ml';
+                    inputUnitToggle.textContent = 'Switch to fl. oz.';
+                }
+                if (resultUnit === 'ml') {
+                    resultUnitLabel.textContent = 'milliliters (ml)';
+                    resultUnitToggle.textContent = 'Switch to fl. oz.';
+                }
+            }
+            
+            // Save preferences to localStorage
+            function savePreferences() {
+                localStorage.setItem('inputUnit', inputUnit);
+                localStorage.setItem('resultUnit', resultUnit);
+                localStorage.setItem('whiskeyVolume', volInput.value);
+                localStorage.setItem('bottleProof', bottleProofInput.value);
+                localStorage.setItem('desiredProof', desiredProofInput.value);
+            }
+            
+            // Calculate ABV from proof
+            function proofToABV(proof) {
+                return (proof / 2).toFixed(1);
+            }
+            
+            // Update ABV displays
+            function updateABVDisplays() {
+                const bottleProof = parseFloat(bottleProofInput.value) || 0;
+                const desiredProofVal = parseFloat(desiredProofInput.value) || 0;
+                bottleABV.textContent = proofToABV(bottleProof) + '% ABV';
+                desiredABV.textContent = proofToABV(desiredProofVal) + '% ABV';
+            }
+
+            /**
+             * Calculates the volume of water needed for dilution.
+             * Formula: V_water = V_whiskey * ((P_bottle / P_desired) - 1)
+             */
+            function calculateDilution() {
+                // 1. Clear previous state
+                errorBox.classList.add('hidden');
+                resultContainer.classList.add('hidden');
+                
+                // Update ABV displays
+                updateABVDisplays();
+                
+                // 2. Get and validate inputs
+                const V_wh = parseFloat(volInput.value);
+                const P_b = parseFloat(bottleProofInput.value);
+                const P_d = parseFloat(desiredProofInput.value);
+
+                if (isNaN(V_wh) || isNaN(P_b) || isNaN(P_d) || V_wh <= 0 || P_b <= 0 || P_d <= 0) {
+                    errorBox.textContent = "Please enter valid, positive numbers for all fields.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                if (P_d >= P_b) {
+                    errorBox.textContent = "The Desired Proof must be lower than the Bottle Proof to dilute it with water.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                // 3. Perform calculation
+                // Convert input to fl. oz. if needed
+                const V_wh_floz = inputUnit === 'ml' ? V_wh / FLOZ_TO_ML : V_wh;
+                const V_w_floz = V_wh_floz * (P_b / P_d - 1);
+
+                // 4. Display result in the current result unit
+                const V_w_display = resultUnit === 'ml' ? V_w_floz * FLOZ_TO_ML : V_w_floz;
+                waterResult.textContent = V_w_display.toFixed(2);
+                
+                // 5. Calculate and display final volume
+                const totalVolume_floz = V_wh_floz + V_w_floz;
+                const totalVolume_display = resultUnit === 'ml' ? totalVolume_floz * FLOZ_TO_ML : totalVolume_floz;
+                finalVolume.textContent = totalVolume_display.toFixed(2);
+                finalVolumeUnit.textContent = resultUnit === 'ml' ? 'ml' : 'fl. oz.';
+                finalProof.textContent = P_d;
+                finalABV.textContent = proofToABV(P_d) + '%';
+                
+                // 6. Update ratio visualization
+                const whiskeyPercent = (V_wh_floz / totalVolume_floz) * 100;
+                const waterPercent = (V_w_floz / totalVolume_floz) * 100;
+                ratioWhiskeyBar.style.width = whiskeyPercent.toFixed(1) + '%';
+                ratioWhiskeyPercent.textContent = whiskeyPercent.toFixed(0) + '%';
+                ratioWaterPercent.textContent = waterPercent.toFixed(0) + '%';
+                
+                // 7. Show result with animation
+                resultContainer.classList.remove('hidden');
+                
+                // Save preferences
+                savePreferences();
+            }
+
+            // Attach event listener to the button
+            calculateButton.addEventListener('click', calculateDilution);
+
+            // Also calculate on pressing Enter in any input field
+            [volInput, bottleProofInput, desiredProofInput].forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateDilution();
+                    }
+                });
+                
+                // Update ABV on input
+                input.addEventListener('input', updateABVDisplays);
+            });
+            
+            // Theme toggle handler
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                themeToggle.classList.toggle('active');
+                const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+            });
+            
+            // Preset button handlers
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const proof = btn.getAttribute('data-proof');
+                    const target = btn.getAttribute('data-target');
+                    document.getElementById(target).value = proof;
+                    updateABVDisplays();
+                    calculateDilution();
+                });
+            });
+            
+            // Copy to clipboard handler
+            copyButton.addEventListener('click', async () => {
+                const whiskeyAmt = volInput.value;
+                const whiskeyUnit = inputUnitLabel.textContent;
+                const waterAmt = waterResult.textContent;
+                const waterUnit = resultUnitLabel.textContent;
+                const totalVol = finalVolume.textContent;
+                const totalUnit = finalVolumeUnit.textContent;
+                const proof = finalProof.textContent;
+                
+                const text = `Perfect Proof Recipe:
+🥃 Whiskey: ${whiskeyAmt} ${whiskeyUnit} at ${bottleProofInput.value} proof
+💧 Water: ${waterAmt} ${waterUnit}
+🍷 Final: ${totalVol} ${totalUnit} at ${proof} proof (${finalABV.textContent} ABV)`;
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>Copied!';
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                }
+            });
+
+            // Input unit toggle handler
+            inputUnitToggle.addEventListener('click', () => {
+                const currentValue = parseFloat(volInput.value) || 0;
+                if (inputUnit === 'floz') {
+                    inputUnit = 'ml';
+                    inputUnitLabel.textContent = 'ml';
+                    inputUnitToggle.textContent = 'Switch to fl. oz.';
+                    volInput.value = (currentValue * FLOZ_TO_ML).toFixed(2);
+                } else {
+                    inputUnit = 'floz';
+                    inputUnitLabel.textContent = 'fl. oz.';
+                    inputUnitToggle.textContent = 'Switch to ml';
+                    volInput.value = (currentValue / FLOZ_TO_ML).toFixed(2);
+                }
+                savePreferences();
+                calculateDilution();
+            });
+            
+            // Result unit toggle handler
+            resultUnitToggle.addEventListener('click', () => {
+                if (resultUnit === 'floz') {
+                    resultUnit = 'ml';
+                    resultUnitLabel.textContent = 'milliliters (ml)';
+                    resultUnitToggle.textContent = 'Switch to fl. oz.';
+                } else {
+                    resultUnit = 'floz';
+                    resultUnitLabel.textContent = 'fluid ounces (fl. oz.)';
+                    resultUnitToggle.textContent = 'Switch to ml';
+                }
+                savePreferences();
+                calculateDilution();
+            });
+
+            // Load saved preferences and run initial calculation
+            loadPreferences();
+            updateABVDisplays();
+            calculateDilution();
+        });
+    </script>
+</body>
+</html>
+
