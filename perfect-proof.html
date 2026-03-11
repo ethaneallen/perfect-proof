@@ -7,7 +7,11 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🥃</text></svg>">
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configure Tailwind for Inter font and custom colors -->
+    <!-- Load Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Configure Tailwind for custom fonts and colors -->
     <script>
         tailwind.config = {
             theme: {
@@ -20,6 +24,7 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     }
                 }
             }
@@ -28,35 +33,86 @@
     <style>
         /* Custom styles for aesthetic enhancements */
         :root {
-            --bg-primary: #f8fafc;
-            --bg-card: linear-gradient(135deg, #1f2937, #111827);
+            --bg-primary: #0f172a;
+            --bg-card: linear-gradient(135deg, rgba(31, 41, 55, 0.95), rgba(17, 24, 39, 0.95));
             --text-primary: #ffffff;
             --text-secondary: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.1);
         }
         
         body.light-mode {
-            --bg-primary: #f8fafc;
-            --bg-card: linear-gradient(135deg, #ffffff, #f1f5f9);
+            --bg-primary: #faf8f5;
+            --bg-card: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(249, 245, 240, 0.95));
             --text-primary: #1f2937;
             --text-secondary: #64748b;
-            --border-color: rgba(0, 0, 0, 0.1);
+            --border-color: rgba(160, 82, 45, 0.15);
         }
         
+        /* Animated background */
         body {
-            background-color: var(--bg-primary);
+            background: var(--bg-primary);
+            position: relative;
+            overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
         
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(160, 82, 45, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(150, 75, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(173, 216, 230, 0.08) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body.light-mode::before {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(160, 82, 45, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(150, 75, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(173, 216, 230, 0.06) 0%, transparent 50%);
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+        
+        /* Frosted glass card effect */
         .card {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px var(--border-color) inset;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         }
         
         .light-mode .card {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 20px 60px rgba(160, 82, 45, 0.15),
+                0 0 0 1px var(--border-color) inset;
         }
         
         .light-mode input,
@@ -224,6 +280,108 @@
         .theme-toggle.active .theme-toggle-slider {
             transform: translateX(26px);
         }
+        
+        /* Ripple effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .ripple:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Premium title styling */
+        .premium-title {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #ffffff 0%, #d4a574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(212, 165, 116, 0.3);
+        }
+        
+        .light-mode .premium-title {
+            background: linear-gradient(135deg, #1f2937 0%, #A0522D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Footer styling */
+        .footer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        /* Pro tips section */
+        .pro-tips {
+            background: rgba(160, 82, 45, 0.1);
+            border-left: 3px solid #A0522D;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .pro-tips-title {
+            font-weight: 600;
+            color: #A0522D;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .light-mode .pro-tips {
+            background: rgba(160, 82, 45, 0.08);
+        }
+        
+        /* Whiskey type presets */
+        .whiskey-preset {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0.5rem;
+            background: rgba(160, 82, 45, 0.2);
+            border: 1px solid rgba(160, 82, 45, 0.4);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .whiskey-preset:hover {
+            background: rgba(160, 82, 45, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(160, 82, 45, 0.3);
+        }
+        
+        .light-mode .whiskey-preset {
+            background: rgba(160, 82, 45, 0.12);
+            color: #1f2937;
+        }
+        
+        .light-mode .whiskey-preset:hover {
+            background: rgba(160, 82, 45, 0.25);
+        }
     </style>
 </head>
 <body class="font-sans min-h-screen flex items-center justify-center p-3 sm:p-4">
@@ -235,8 +393,8 @@
         </div>
         
         <!-- Title and Icon -->
-        <div class="flex flex-col items-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-bourbon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex flex-col items-center mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-bourbon mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
                 <path d="M12 16v4"></path>
                 <path d="M8 20h8"></path>
@@ -244,8 +402,31 @@
                 <path d="M12 4v4"></path>
                 <path d="M10 6h4"></path>
             </svg>
-            <h1 class="text-3xl font-bold mt-2 text-white">Perfect Proof</h1>
-            <p class="text-sm text-gray-400">Whiskey Dilution Calculator</p>
+            <h1 class="text-4xl font-bold premium-title">Perfect Proof</h1>
+            <p class="text-sm text-gray-400 mt-1">Whiskey Dilution Calculator</p>
+        </div>
+        
+        <!-- Quick Whiskey Type Presets -->
+        <div class="mb-6">
+            <p class="text-xs text-gray-400 mb-2 text-center">Quick Presets</p>
+            <div class="grid grid-cols-4 gap-2">
+                <button class="whiskey-preset" data-whiskey-type="bourbon" data-proof="100">
+                    <div class="font-semibold">Bourbon</div>
+                    <div class="text-xs opacity-75">100°</div>
+                </button>
+                <button class="whiskey-preset" data-whiskey-type="scotch" data-proof="86">
+                    <div class="font-semibold">Scotch</div>
+                    <div class="text-xs opacity-75">86°</div>
+                </button>
+                <button class="whiskey-preset" data-whiskey-type="rye" data-proof="110">
+                    <div class="font-semibold">Rye</div>
+                    <div class="text-xs opacity-75">110°</div>
+                </button>
+                <button class="whiskey-preset" data-whiskey-type="cask" data-proof="120">
+                    <div class="font-semibold">Cask</div>
+                    <div class="text-xs opacity-75">120°</div>
+                </button>
+            </div>
         </div>
 
         <!-- Input Fields -->
@@ -308,7 +489,7 @@
 
         <!-- Calculate Button -->
         <button id="calculateButton"
-                class="w-full py-3 bg-bourbon hover:bg-whiskey text-white font-bold rounded-lg transition duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-bourbon/50">
+                class="ripple w-full py-3 bg-bourbon hover:bg-whiskey text-white font-bold rounded-lg transition duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-bourbon/50">
             Calculate Water Needed
         </button>
 
@@ -341,12 +522,34 @@
             </div>
             
             <!-- Copy Button -->
-            <button id="copyButton" class="mt-3 px-4 py-2 bg-water/20 hover:bg-water/30 text-white text-sm rounded transition duration-200 flex items-center justify-center mx-auto">
+            <button id="copyButton" class="ripple mt-3 px-4 py-2 bg-water/20 hover:bg-water/30 text-white text-sm rounded transition duration-200 flex items-center justify-center mx-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
                 Copy Result
             </button>
+        </div>
+        
+        <!-- Pro Tips Section -->
+        <div class="pro-tips">
+            <div class="pro-tips-title">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                Pro Tips
+            </div>
+            <ul class="text-xs space-y-1 text-gray-300 list-disc list-inside">
+                <li>Add water gradually and taste between additions</li>
+                <li>Use room temperature filtered water for best results</li>
+                <li>Higher proof whiskeys benefit most from dilution</li>
+                <li>Let your whiskey rest 5-10 minutes after adding water</li>
+            </ul>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Crafted for whiskey enthusiasts</p>
+            <p class="mt-1 opacity-60">Sip responsibly, calculate precisely</p>
         </div>
 
         <!-- Error Message -->
@@ -531,6 +734,16 @@
                     const proof = btn.getAttribute('data-proof');
                     const target = btn.getAttribute('data-target');
                     document.getElementById(target).value = proof;
+                    updateABVDisplays();
+                    calculateDilution();
+                });
+            });
+            
+            // Whiskey type preset handlers
+            document.querySelectorAll('.whiskey-preset').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const proof = btn.getAttribute('data-proof');
+                    bottleProofInput.value = proof;
                     updateABVDisplays();
                     calculateDilution();
                 });
