@@ -448,7 +448,7 @@
             <!-- 2. Bottle Proof -->
             <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
                 <div class="flex justify-between items-center gap-2 mb-1">
-                    <label for="bottleProof" class="text-xs sm:text-sm font-medium text-gray-300">Bottle Proof
+                    <label for="bottleProof" class="text-xs sm:text-sm font-medium text-gray-300"><span id="bottleStrengthLabel">Bottle Proof</span>
                         <span class="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -456,7 +456,12 @@
                             <span class="tooltiptext">Proof = ABV × 2. For example, 100 proof = 50% ABV</span>
                         </span>
                     </label>
-                    <span id="bottleABV" class="text-xs text-gray-400 whitespace-nowrap">55% ABV</span>
+                    <div class="flex items-center gap-2">
+                        <button id="bottleStrengthToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200 whitespace-nowrap">
+                            Use ABV
+                        </button>
+                        <span id="bottleABV" class="text-xs text-gray-400 whitespace-nowrap">55% ABV</span>
+                    </div>
                 </div>
                 <input type="number" id="bottleProof" value="110" min="1" step="1"
                        class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500 mb-2"
@@ -472,8 +477,13 @@
             <!-- 3. Desired Proof -->
             <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
                 <div class="flex justify-between items-center gap-2 mb-1">
-                    <label for="desiredProof" class="text-xs sm:text-sm font-medium text-gray-300">Desired Proof</label>
-                    <span id="desiredABV" class="text-xs text-gray-400 whitespace-nowrap">47.5% ABV</span>
+                    <label for="desiredProof" class="text-xs sm:text-sm font-medium text-gray-300" id="desiredStrengthLabel">Desired Proof</label>
+                    <div class="flex items-center gap-2">
+                        <button id="desiredStrengthToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200 whitespace-nowrap">
+                            Use ABV
+                        </button>
+                        <span id="desiredABV" class="text-xs text-gray-400 whitespace-nowrap">47.5% ABV</span>
+                    </div>
                 </div>
                 <input type="number" id="desiredProof" value="95" min="1" step="1"
                        class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500 mb-2"
@@ -575,6 +585,10 @@
             const themeToggle = document.getElementById('themeToggle');
             const bottleABV = document.getElementById('bottleABV');
             const desiredABV = document.getElementById('desiredABV');
+            const bottleStrengthLabel = document.getElementById('bottleStrengthLabel');
+            const desiredStrengthLabel = document.getElementById('desiredStrengthLabel');
+            const bottleStrengthToggle = document.getElementById('bottleStrengthToggle');
+            const desiredStrengthToggle = document.getElementById('desiredStrengthToggle');
             const finalVolume = document.getElementById('finalVolume');
             const finalVolumeUnit = document.getElementById('finalVolumeUnit');
             const finalProof = document.getElementById('finalProof');
@@ -587,7 +601,58 @@
             // Unit state: 'floz' or 'ml'
             let inputUnit = 'floz';
             let resultUnit = 'floz';
+            let bottleStrengthUnit = 'proof';
+            let desiredStrengthUnit = 'proof';
             const FLOZ_TO_ML = 29.5735;
+
+            function formatProof(proof) {
+                const rounded = Math.round(proof * 10) / 10;
+                return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+            }
+
+            function formatABV(abv) {
+                const rounded = Math.round(abv * 10) / 10;
+                return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+            }
+
+            function inputValueToProof(rawValue, unit) {
+                if (unit === 'abv') {
+                    return rawValue * 2;
+                }
+                return rawValue;
+            }
+
+            function proofToInputValue(proofValue, unit) {
+                if (unit === 'abv') {
+                    return proofValue / 2;
+                }
+                return proofValue;
+            }
+
+            function configureStrengthInput(inputElement, unit, kind) {
+                if (unit === 'abv') {
+                    inputElement.min = '0.1';
+                    inputElement.max = '100';
+                    inputElement.step = '0.1';
+                    inputElement.placeholder = 'e.g., 55';
+                    inputElement.setAttribute('aria-label', `${kind} ABV`);
+                } else {
+                    inputElement.min = '1';
+                    inputElement.max = '200';
+                    inputElement.step = '0.1';
+                    inputElement.placeholder = 'e.g., 110';
+                    inputElement.setAttribute('aria-label', `${kind} Proof`);
+                }
+            }
+
+            function updateStrengthUnitUI() {
+                bottleStrengthLabel.textContent = bottleStrengthUnit === 'proof' ? 'Bottle Proof' : 'Bottle ABV';
+                desiredStrengthLabel.textContent = desiredStrengthUnit === 'proof' ? 'Desired Proof' : 'Desired ABV';
+                bottleStrengthToggle.textContent = bottleStrengthUnit === 'proof' ? 'Use ABV' : 'Use Proof';
+                desiredStrengthToggle.textContent = desiredStrengthUnit === 'proof' ? 'Use ABV' : 'Use Proof';
+                configureStrengthInput(bottleProofInput, bottleStrengthUnit, 'Bottle');
+                configureStrengthInput(desiredProofInput, desiredStrengthUnit, 'Desired');
+            }
             
             // Load preferences from localStorage
             function loadPreferences() {
@@ -602,6 +667,16 @@
                 
                 const savedResultUnit = localStorage.getItem('resultUnit');
                 if (savedResultUnit) resultUnit = savedResultUnit;
+
+                const savedBottleStrengthUnit = localStorage.getItem('bottleStrengthUnit');
+                if (savedBottleStrengthUnit === 'proof' || savedBottleStrengthUnit === 'abv') {
+                    bottleStrengthUnit = savedBottleStrengthUnit;
+                }
+
+                const savedDesiredStrengthUnit = localStorage.getItem('desiredStrengthUnit');
+                if (savedDesiredStrengthUnit === 'proof' || savedDesiredStrengthUnit === 'abv') {
+                    desiredStrengthUnit = savedDesiredStrengthUnit;
+                }
                 
                 const savedWhiskeyVolume = localStorage.getItem('whiskeyVolume');
                 if (savedWhiskeyVolume) volInput.value = savedWhiskeyVolume;
@@ -621,6 +696,8 @@
                     resultUnitLabel.textContent = 'milliliters (ml)';
                     resultUnitToggle.textContent = 'Switch to fl. oz.';
                 }
+
+                updateStrengthUnitUI();
             }
             
             // Save preferences to localStorage
@@ -630,19 +707,33 @@
                 localStorage.setItem('whiskeyVolume', volInput.value);
                 localStorage.setItem('bottleProof', bottleProofInput.value);
                 localStorage.setItem('desiredProof', desiredProofInput.value);
+                localStorage.setItem('bottleStrengthUnit', bottleStrengthUnit);
+                localStorage.setItem('desiredStrengthUnit', desiredStrengthUnit);
             }
             
             // Calculate ABV from proof
             function proofToABV(proof) {
-                return (proof / 2).toFixed(1);
+                return formatABV(proof / 2);
             }
             
             // Update ABV displays
             function updateABVDisplays() {
-                const bottleProof = parseFloat(bottleProofInput.value) || 0;
-                const desiredProofVal = parseFloat(desiredProofInput.value) || 0;
-                bottleABV.textContent = proofToABV(bottleProof) + '% ABV';
-                desiredABV.textContent = proofToABV(desiredProofVal) + '% ABV';
+                const bottleRaw = parseFloat(bottleProofInput.value) || 0;
+                const desiredRaw = parseFloat(desiredProofInput.value) || 0;
+                const bottleProof = inputValueToProof(bottleRaw, bottleStrengthUnit);
+                const desiredProofVal = inputValueToProof(desiredRaw, desiredStrengthUnit);
+
+                if (bottleStrengthUnit === 'proof') {
+                    bottleABV.textContent = proofToABV(bottleProof) + '% ABV';
+                } else {
+                    bottleABV.textContent = formatProof(bottleProof) + ' proof';
+                }
+
+                if (desiredStrengthUnit === 'proof') {
+                    desiredABV.textContent = proofToABV(desiredProofVal) + '% ABV';
+                } else {
+                    desiredABV.textContent = formatProof(desiredProofVal) + ' proof';
+                }
             }
 
             /**
@@ -659,10 +750,12 @@
                 
                 // 2. Get and validate inputs
                 const V_wh = parseFloat(volInput.value);
-                const P_b = parseFloat(bottleProofInput.value);
-                const P_d = parseFloat(desiredProofInput.value);
+                const bottleRaw = parseFloat(bottleProofInput.value);
+                const desiredRaw = parseFloat(desiredProofInput.value);
+                const P_b = inputValueToProof(bottleRaw, bottleStrengthUnit);
+                const P_d = inputValueToProof(desiredRaw, desiredStrengthUnit);
 
-                if (isNaN(V_wh) || isNaN(P_b) || isNaN(P_d) || V_wh <= 0 || P_b <= 0 || P_d <= 0) {
+                if (isNaN(V_wh) || isNaN(bottleRaw) || isNaN(desiredRaw) || V_wh <= 0 || P_b <= 0 || P_d <= 0) {
                     errorBox.textContent = "Please enter valid, positive numbers for all fields.";
                     errorBox.classList.remove('hidden');
                     return;
@@ -688,7 +781,7 @@
                 const totalVolume_display = resultUnit === 'ml' ? totalVolume_floz * FLOZ_TO_ML : totalVolume_floz;
                 finalVolume.textContent = totalVolume_display.toFixed(2);
                 finalVolumeUnit.textContent = resultUnit === 'ml' ? 'ml' : 'fl. oz.';
-                finalProof.textContent = P_d;
+                finalProof.textContent = formatProof(P_d);
                 finalABV.textContent = proofToABV(P_d) + '%';
                 
                 // 6. Update ratio visualization
@@ -733,7 +826,10 @@
                 btn.addEventListener('click', () => {
                     const proof = btn.getAttribute('data-proof');
                     const target = btn.getAttribute('data-target');
-                    document.getElementById(target).value = proof;
+                    const targetInput = document.getElementById(target);
+                    const targetUnit = target === 'bottleProof' ? bottleStrengthUnit : desiredStrengthUnit;
+                    const displayValue = proofToInputValue(parseFloat(proof), targetUnit);
+                    targetInput.value = targetUnit === 'abv' ? formatABV(displayValue) : formatProof(displayValue);
                     updateABVDisplays();
                     calculateDilution();
                 });
@@ -743,7 +839,8 @@
             document.querySelectorAll('.whiskey-preset').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const proof = btn.getAttribute('data-proof');
-                    bottleProofInput.value = proof;
+                    const displayValue = proofToInputValue(parseFloat(proof), bottleStrengthUnit);
+                    bottleProofInput.value = bottleStrengthUnit === 'abv' ? formatABV(displayValue) : formatProof(displayValue);
                     updateABVDisplays();
                     calculateDilution();
                 });
@@ -758,9 +855,15 @@
                 const totalVol = finalVolume.textContent;
                 const totalUnit = finalVolumeUnit.textContent;
                 const proof = finalProof.textContent;
+                const bottleRaw = parseFloat(bottleProofInput.value) || 0;
+                const bottleProofValue = inputValueToProof(bottleRaw, bottleStrengthUnit);
+                const bottleABVValue = bottleProofValue / 2;
+                const bottleInputDisplay = bottleStrengthUnit === 'proof'
+                    ? `${formatProof(bottleRaw)} proof`
+                    : `${formatABV(bottleRaw)}% ABV`;
                 
                 const text = `Perfect Proof Recipe:
-🥃 Whiskey: ${whiskeyAmt} ${whiskeyUnit} at ${bottleProofInput.value} proof
+🥃 Whiskey: ${whiskeyAmt} ${whiskeyUnit} at ${bottleInputDisplay} (${formatProof(bottleProofValue)} proof / ${formatABV(bottleABVValue)}% ABV)
 💧 Water: ${waterAmt} ${waterUnit}
 🍷 Final: ${totalVol} ${totalUnit} at ${proof} proof (${finalABV.textContent} ABV)`;
                 
@@ -793,6 +896,42 @@
                 savePreferences();
                 calculateDilution();
             });
+
+            // Bottle strength unit toggle handler
+            bottleStrengthToggle.addEventListener('click', () => {
+                const currentRaw = parseFloat(bottleProofInput.value);
+                if (!isNaN(currentRaw) && currentRaw > 0) {
+                    const currentProof = inputValueToProof(currentRaw, bottleStrengthUnit);
+                    bottleStrengthUnit = bottleStrengthUnit === 'proof' ? 'abv' : 'proof';
+                    bottleProofInput.value = bottleStrengthUnit === 'abv'
+                        ? formatABV(proofToInputValue(currentProof, bottleStrengthUnit))
+                        : formatProof(proofToInputValue(currentProof, bottleStrengthUnit));
+                } else {
+                    bottleStrengthUnit = bottleStrengthUnit === 'proof' ? 'abv' : 'proof';
+                }
+                updateStrengthUnitUI();
+                updateABVDisplays();
+                savePreferences();
+                calculateDilution();
+            });
+
+            // Desired strength unit toggle handler
+            desiredStrengthToggle.addEventListener('click', () => {
+                const currentRaw = parseFloat(desiredProofInput.value);
+                if (!isNaN(currentRaw) && currentRaw > 0) {
+                    const currentProof = inputValueToProof(currentRaw, desiredStrengthUnit);
+                    desiredStrengthUnit = desiredStrengthUnit === 'proof' ? 'abv' : 'proof';
+                    desiredProofInput.value = desiredStrengthUnit === 'abv'
+                        ? formatABV(proofToInputValue(currentProof, desiredStrengthUnit))
+                        : formatProof(proofToInputValue(currentProof, desiredStrengthUnit));
+                } else {
+                    desiredStrengthUnit = desiredStrengthUnit === 'proof' ? 'abv' : 'proof';
+                }
+                updateStrengthUnitUI();
+                updateABVDisplays();
+                savePreferences();
+                calculateDilution();
+            });
             
             // Result unit toggle handler
             resultUnitToggle.addEventListener('click', () => {
@@ -811,6 +950,7 @@
 
             // Load saved preferences and run initial calculation
             loadPreferences();
+            updateStrengthUnitUI();
             updateABVDisplays();
             calculateDilution();
         });
