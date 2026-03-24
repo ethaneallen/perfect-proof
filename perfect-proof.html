@@ -9,13 +9,14 @@
     <meta name="apple-mobile-web-app-title" content="Perfect Proof">
     <link rel="manifest" href="./manifest.json">
     <title>Perfect Proof Calculator</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🥃</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.svg">
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Load Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Configure Tailwind for custom fonts and colors -->
     <script>
         tailwind.config = {
@@ -28,8 +29,8 @@
                         'dark-bg': '#1e293b',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
                     }
                 }
             }
@@ -59,6 +60,8 @@
             position: relative;
             overflow-x: hidden;
             transition: background-color 0.3s ease;
+            line-height: 1.45;
+            letter-spacing: 0.01em;
         }
         
         body::before {
@@ -219,8 +222,8 @@
         
         /* Ratio bar */
         .ratio-bar {
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 999px;
             overflow: hidden;
             background-color: rgba(173, 216, 230, 0.3);
         }
@@ -312,12 +315,13 @@
         
         /* Premium title styling */
         .premium-title {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cormorant Garamond', serif;
             background: linear-gradient(135deg, #ffffff 0%, #d4a574 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: 0 2px 10px rgba(212, 165, 116, 0.3);
+            letter-spacing: 0.02em;
         }
         
         .light-mode .premium-title {
@@ -387,18 +391,162 @@
         .light-mode .whiskey-preset:hover {
             background: rgba(160, 82, 45, 0.25);
         }
+
+        .section-title {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .kicker {
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #d4a574;
+            font-weight: 600;
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+        }
+
+        .result-number {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.02em;
+            text-shadow: 0 6px 24px rgba(173, 216, 230, 0.25);
+        }
+
+        .chip-button {
+            border-radius: 999px;
+            border: 1px solid rgba(212, 165, 116, 0.4);
+            background: rgba(212, 165, 116, 0.12);
+            padding: 0.3rem 0.75rem;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+        }
+
+        .chip-button:hover {
+            background: rgba(212, 165, 116, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .chip-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .light-mode .chip-button {
+            color: #1f2937;
+            background: rgba(160, 82, 45, 0.1);
+        }
+
+        .chip-input {
+            width: 100%;
+            border-radius: 999px;
+            border: 1px solid rgba(212, 165, 116, 0.35);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.35rem 0.8rem;
+            font-size: 0.74rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chip-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .chip-input:focus {
+            border-color: rgba(212, 165, 116, 0.7);
+            box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.2);
+        }
+
+        .light-mode .chip-input {
+            background: rgba(160, 82, 45, 0.06);
+        }
+
+        .app-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(15, 23, 42, 0.9);
+            color: #f8fafc;
+            border: 1px solid rgba(212, 165, 116, 0.35);
+            border-radius: 999px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.01em;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 50;
+        }
+
+        .app-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .light-mode .app-toast {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1f2937;
+            border-color: rgba(160, 82, 45, 0.3);
+        }
+
+        @keyframes resultReveal {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .result-reveal {
+            animation: resultReveal 0.35s ease-out;
+        }
+
+        details.pro-tips {
+            cursor: pointer;
+        }
+
+        details.pro-tips summary {
+            list-style: none;
+            font-weight: 600;
+            color: #d4a574;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        details.pro-tips summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.pro-tips[open] summary {
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
-<body class="font-sans min-h-screen flex items-center justify-center p-3 sm:p-4">
+<body class="font-sans min-h-screen flex items-center justify-center p-3 sm:p-5">
 
-    <div class="card w-full max-w-md p-4 sm:p-6 rounded-xl text-white relative">
+    <div class="card w-full max-w-md p-5 sm:p-7 rounded-2xl text-white relative">
         <!-- Theme Toggle -->
         <div id="themeToggle" class="theme-toggle" title="Toggle light/dark mode">
             <div class="theme-toggle-slider"></div>
         </div>
         
         <!-- Title and Icon -->
-        <div class="flex flex-col items-center mb-8">
+        <div class="flex flex-col items-center mb-7">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-bourbon mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
                 <path d="M12 16v4"></path>
@@ -407,13 +555,23 @@
                 <path d="M12 4v4"></path>
                 <path d="M10 6h4"></path>
             </svg>
+            <p class="kicker">The Copper Cut</p>
             <h1 class="text-4xl font-bold premium-title">Perfect Proof</h1>
-            <p class="text-sm text-gray-400 mt-1">Whiskey Dilution Calculator</p>
+            <p class="hero-subtitle">Dial in a calmer, cleaner pour.</p>
         </div>
         
         <!-- Quick Whiskey Type Presets -->
         <div class="mb-6">
-            <p class="text-xs text-gray-400 mb-2 text-center">Quick Presets</p>
+            <div class="flex items-center justify-between gap-2 mb-2">
+                <p class="section-title">Quick Presets</p>
+                <div class="flex items-center gap-2">
+                    <button id="saveMyPourButton" class="chip-button" title="Save your current setup as a one-tap preset">Save My Pour</button>
+                    <button id="useMyPourButton" class="chip-button" title="Apply your saved setup" disabled>Use My Pour</button>
+                </div>
+            </div>
+            <div class="mb-2">
+                <input id="myPourNameInput" class="chip-input" type="text" maxlength="24" placeholder="Name this pour (e.g., Friday Rye)">
+            </div>
             <div class="grid grid-cols-4 gap-2">
                 <button class="whiskey-preset" data-whiskey-type="bourbon" data-proof="100">
                     <div class="font-semibold">Bourbon</div>
@@ -435,25 +593,25 @@
         </div>
 
         <!-- Input Fields -->
-        <div class="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+        <div class="space-y-4 sm:space-y-5 mb-5 sm:mb-7">
             
             <!-- 1. Amount of Whiskey -->
-            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+            <div class="input-group bg-gray-700 rounded-lg p-3 sm:p-4">
                 <div class="flex justify-between items-start gap-2 mb-1">
-                    <label for="whiskeyVolume" class="text-xs sm:text-sm font-medium text-gray-300">Amount of Whiskey (<span id="inputUnitLabel">fl. oz.</span>)</label>
+                    <label for="whiskeyVolume" class="text-xs sm:text-sm font-medium text-gray-300">Starting Pour (<span id="inputUnitLabel">fl. oz.</span>)</label>
                     <button id="inputUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200 whitespace-nowrap">
                         Switch to ml
                     </button>
                 </div>
                 <input type="number" id="whiskeyVolume" value="2" min="0.01" step="0.01"
                        class="w-full bg-transparent text-lg sm:text-xl font-semibold focus:outline-none placeholder-gray-500"
-                       placeholder="e.g., 2.0" aria-label="Amount of Whiskey">
+                       placeholder="e.g., 2.0" aria-label="Starting Pour">
             </div>
 
             <!-- 2. Bottle Proof -->
-            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+            <div class="input-group bg-gray-700 rounded-lg p-3 sm:p-4">
                 <div class="flex justify-between items-center gap-2 mb-1">
-                    <label for="bottleProof" class="text-xs sm:text-sm font-medium text-gray-300"><span id="bottleStrengthLabel">Bottle Proof</span>
+                    <label for="bottleProof" class="text-xs sm:text-sm font-medium text-gray-300"><span id="bottleStrengthLabel">Bottle Strength</span>
                         <span class="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -480,9 +638,9 @@
             </div>
 
             <!-- 3. Desired Proof -->
-            <div class="input-group bg-gray-700 rounded-lg p-2 sm:p-3">
+            <div class="input-group bg-gray-700 rounded-lg p-3 sm:p-4">
                 <div class="flex justify-between items-center gap-2 mb-1">
-                    <label for="desiredProof" class="text-xs sm:text-sm font-medium text-gray-300" id="desiredStrengthLabel">Desired Proof</label>
+                    <label for="desiredProof" class="text-xs sm:text-sm font-medium text-gray-300" id="desiredStrengthLabel">Target Strength</label>
                     <div class="flex items-center gap-2">
                         <button id="desiredStrengthToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200 whitespace-nowrap">
                             Use ABV
@@ -505,7 +663,7 @@
         <!-- Calculate Button -->
         <button id="calculateButton"
                 class="ripple w-full py-3 bg-bourbon hover:bg-whiskey text-white font-bold rounded-lg transition duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-bourbon/50">
-            Calculate Water Needed
+            Dial In My Pour
         </button>
 
         <!-- Result Display -->
@@ -521,8 +679,8 @@
                 </div>
             </div>
             
-            <p class="text-sm text-gray-300 mb-1">Add this much water:</p>
-            <p id="waterResult" class="text-4xl font-extrabold text-water">0.00</p>
+            <p class="text-sm text-gray-300 mb-1">Add this much water</p>
+            <p id="waterResult" class="result-number text-5xl font-extrabold text-water">0.00</p>
             <div class="flex justify-center items-center gap-2 mt-1">
                 <p class="text-md font-medium text-gray-300"><span id="resultUnitLabel">fluid ounces (fl. oz.)</span></p>
                 <button id="resultUnitToggle" class="text-xs bg-bourbon hover:bg-whiskey px-2 py-1 rounded transition duration-200">
@@ -531,40 +689,38 @@
             </div>
             
             <!-- Final Volume Display -->
-            <div class="mt-3 pt-3 border-t border-water/30">
-                <p class="text-xs text-gray-300 mb-1">Final Volume: <span id="finalVolume" class="font-bold text-white">2.32</span> <span id="finalVolumeUnit">fl. oz.</span></p>
-                <p class="text-xs text-gray-300">Final Strength: <span id="finalProof" class="font-bold text-white">95</span> proof (<span id="finalABV">47.5%</span> ABV)</p>
+            <div class="mt-4 pt-3 border-t border-water/30">
+                <p class="text-xs text-gray-300 mb-1">Final volume: <span id="finalVolume" class="font-bold text-white">2.32</span> <span id="finalVolumeUnit">fl. oz.</span></p>
+                <p class="text-xs text-gray-300">Target reached: <span id="finalProof" class="font-bold text-white">95</span> proof (<span id="finalABV">47.5%</span> ABV)</p>
             </div>
             
             <!-- Copy Button -->
-            <button id="copyButton" class="ripple mt-3 px-4 py-2 bg-water/20 hover:bg-water/30 text-white text-sm rounded transition duration-200 flex items-center justify-center mx-auto">
+            <button id="copyButton" class="ripple mt-4 px-4 py-2 bg-water/20 hover:bg-water/30 text-white text-sm rounded transition duration-200 flex items-center justify-center mx-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                Copy Result
+                Copy Pour Card
             </button>
         </div>
         
         <!-- Pro Tips Section -->
-        <div class="pro-tips">
-            <div class="pro-tips-title">
+        <details class="pro-tips">
+            <summary>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
-                Pro Tips
-            </div>
+                Bartender Notes
+            </summary>
             <ul class="text-xs space-y-1 text-gray-300 list-disc list-inside">
-                <li>Add water gradually and taste between additions</li>
-                <li>Use room temperature filtered water for best results</li>
-                <li>Higher proof whiskeys benefit most from dilution</li>
-                <li>Let your whiskey rest 5-10 minutes after adding water</li>
+                <li>Add water in small steps and taste between additions.</li>
+                <li>Soft filtered water keeps the nose clean and bright.</li>
+                <li>Rest 2-5 minutes before sipping to let aromas open.</li>
             </ul>
-        </div>
+        </details>
         
         <!-- Footer -->
         <div class="footer">
-            <p>Crafted for whiskey enthusiasts</p>
-            <p class="mt-1 opacity-60">Sip responsibly, calculate precisely</p>
+            <p>Built for calm, precise whiskey rituals.</p>
         </div>
 
         <!-- Error Message -->
@@ -573,6 +729,8 @@
         </div>
 
     </div>
+
+    <div id="appToast" class="app-toast" aria-live="polite"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -602,13 +760,37 @@
             const ratioWhiskeyPercent = document.getElementById('ratioWhiskeyPercent');
             const ratioWaterPercent = document.getElementById('ratioWaterPercent');
             const copyButton = document.getElementById('copyButton');
+            const saveMyPourButton = document.getElementById('saveMyPourButton');
+            const useMyPourButton = document.getElementById('useMyPourButton');
+            const myPourNameInput = document.getElementById('myPourNameInput');
+            const appToast = document.getElementById('appToast');
             
             // Unit state: 'floz' or 'ml'
             let inputUnit = 'floz';
             let resultUnit = 'floz';
             let bottleStrengthUnit = 'proof';
             let desiredStrengthUnit = 'proof';
+            let myPourPreset = null;
+            let toastTimer = null;
             const FLOZ_TO_ML = 29.5735;
+
+            function pulseHaptic(ms = 12) {
+                if (navigator.vibrate) {
+                    navigator.vibrate(ms);
+                }
+            }
+
+            function showToast(message) {
+                if (!appToast) return;
+                appToast.textContent = message;
+                appToast.classList.add('show');
+                if (toastTimer) {
+                    clearTimeout(toastTimer);
+                }
+                toastTimer = setTimeout(() => {
+                    appToast.classList.remove('show');
+                }, 1500);
+            }
 
             function formatProof(proof) {
                 const rounded = Math.round(proof * 10) / 10;
@@ -651,12 +833,62 @@
             }
 
             function updateStrengthUnitUI() {
-                bottleStrengthLabel.textContent = bottleStrengthUnit === 'proof' ? 'Bottle Proof' : 'Bottle ABV';
-                desiredStrengthLabel.textContent = desiredStrengthUnit === 'proof' ? 'Desired Proof' : 'Desired ABV';
+                bottleStrengthLabel.textContent = bottleStrengthUnit === 'proof' ? 'Bottle Strength' : 'Bottle ABV';
+                desiredStrengthLabel.textContent = desiredStrengthUnit === 'proof' ? 'Target Strength' : 'Target ABV';
                 bottleStrengthToggle.textContent = bottleStrengthUnit === 'proof' ? 'Use ABV' : 'Use Proof';
                 desiredStrengthToggle.textContent = desiredStrengthUnit === 'proof' ? 'Use ABV' : 'Use Proof';
                 configureStrengthInput(bottleProofInput, bottleStrengthUnit, 'Bottle');
                 configureStrengthInput(desiredProofInput, desiredStrengthUnit, 'Desired');
+            }
+
+            function updateMyPourButtonState() {
+                useMyPourButton.disabled = !myPourPreset;
+                if (myPourPreset && myPourPreset.name) {
+                    useMyPourButton.textContent = `Use ${myPourPreset.name}`;
+                } else {
+                    useMyPourButton.textContent = 'Use My Pour';
+                }
+            }
+
+            function getCurrentState() {
+                const normalizedName = (myPourNameInput.value || '').trim();
+                return {
+                    name: normalizedName || 'My Pour',
+                    whiskeyVolume: volInput.value,
+                    bottleValue: bottleProofInput.value,
+                    desiredValue: desiredProofInput.value,
+                    inputUnit,
+                    resultUnit,
+                    bottleStrengthUnit,
+                    desiredStrengthUnit
+                };
+            }
+
+            function applyState(state) {
+                myPourNameInput.value = state.name || '';
+                volInput.value = state.whiskeyVolume;
+                bottleProofInput.value = state.bottleValue;
+                desiredProofInput.value = state.desiredValue;
+                inputUnit = state.inputUnit;
+                resultUnit = state.resultUnit;
+                bottleStrengthUnit = state.bottleStrengthUnit;
+                desiredStrengthUnit = state.desiredStrengthUnit;
+
+                inputUnitLabel.textContent = inputUnit === 'ml' ? 'ml' : 'fl. oz.';
+                inputUnitToggle.textContent = inputUnit === 'ml' ? 'Switch to fl. oz.' : 'Switch to ml';
+                resultUnitLabel.textContent = resultUnit === 'ml' ? 'milliliters (ml)' : 'fluid ounces (fl. oz.)';
+                resultUnitToggle.textContent = resultUnit === 'ml' ? 'Switch to fl. oz.' : 'Switch to ml';
+
+                updateStrengthUnitUI();
+                updateABVDisplays();
+                calculateDilution();
+                updateMyPourButtonState();
+            }
+
+            function triggerResultReveal() {
+                resultContainer.classList.remove('result-reveal');
+                void resultContainer.offsetWidth;
+                resultContainer.classList.add('result-reveal');
             }
             
             // Load preferences from localStorage
@@ -691,6 +923,18 @@
                 
                 const savedDesiredProof = localStorage.getItem('desiredProof');
                 if (savedDesiredProof) desiredProofInput.value = savedDesiredProof;
+
+                const savedMyPour = localStorage.getItem('myPourPreset');
+                if (savedMyPour) {
+                    try {
+                        myPourPreset = JSON.parse(savedMyPour);
+                        if (myPourPreset && myPourPreset.name) {
+                            myPourNameInput.value = myPourPreset.name;
+                        }
+                    } catch (e) {
+                        myPourPreset = null;
+                    }
+                }
                 
                 // Update UI based on saved units
                 if (inputUnit === 'ml') {
@@ -703,6 +947,7 @@
                 }
 
                 updateStrengthUnitUI();
+                updateMyPourButtonState();
             }
             
             // Save preferences to localStorage
@@ -798,13 +1043,17 @@
                 
                 // 7. Show result with animation
                 resultContainer.classList.remove('hidden');
+                triggerResultReveal();
                 
                 // Save preferences
                 savePreferences();
             }
 
             // Attach event listener to the button
-            calculateButton.addEventListener('click', calculateDilution);
+            calculateButton.addEventListener('click', () => {
+                pulseHaptic();
+                calculateDilution();
+            });
 
             // Also calculate on pressing Enter in any input field
             [volInput, bottleProofInput, desiredProofInput].forEach(input => {
@@ -829,6 +1078,7 @@
             // Preset button handlers
             document.querySelectorAll('.preset-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    pulseHaptic(8);
                     const proof = btn.getAttribute('data-proof');
                     const target = btn.getAttribute('data-target');
                     const targetInput = document.getElementById(target);
@@ -843,6 +1093,7 @@
             // Whiskey type preset handlers
             document.querySelectorAll('.whiskey-preset').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    pulseHaptic(8);
                     const proof = btn.getAttribute('data-proof');
                     const displayValue = proofToInputValue(parseFloat(proof), bottleStrengthUnit);
                     bottleProofInput.value = bottleStrengthUnit === 'abv' ? formatABV(displayValue) : formatProof(displayValue);
@@ -867,13 +1118,15 @@
                     ? `${formatProof(bottleRaw)} proof`
                     : `${formatABV(bottleRaw)}% ABV`;
                 
-                const text = `Perfect Proof Recipe:
-🥃 Whiskey: ${whiskeyAmt} ${whiskeyUnit} at ${bottleInputDisplay} (${formatProof(bottleProofValue)} proof / ${formatABV(bottleABVValue)}% ABV)
-💧 Water: ${waterAmt} ${waterUnit}
-🍷 Final: ${totalVol} ${totalUnit} at ${proof} proof (${finalABV.textContent} ABV)`;
+                const text = `Perfect Proof Pour Card:
+Starting pour: ${whiskeyAmt} ${whiskeyUnit}
+Bottle strength: ${bottleInputDisplay} (${formatProof(bottleProofValue)} proof / ${formatABV(bottleABVValue)}% ABV)
+Water to add: ${waterAmt} ${waterUnit}
+Final glass: ${totalVol} ${totalUnit} at ${proof} proof (${finalABV.textContent} ABV)`;
                 
                 try {
                     await navigator.clipboard.writeText(text);
+                    pulseHaptic(14);
                     const originalText = copyButton.innerHTML;
                     copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>Copied!';
                     setTimeout(() => {
@@ -882,6 +1135,34 @@
                 } catch (err) {
                     console.error('Failed to copy:', err);
                 }
+            });
+
+            saveMyPourButton.addEventListener('click', () => {
+                myPourPreset = getCurrentState();
+                localStorage.setItem('myPourPreset', JSON.stringify(myPourPreset));
+                updateMyPourButtonState();
+                pulseHaptic(14);
+                showToast(`${myPourPreset.name} saved`);
+                const originalText = saveMyPourButton.textContent;
+                saveMyPourButton.textContent = `Saved ${myPourPreset.name}`;
+                setTimeout(() => {
+                    saveMyPourButton.textContent = originalText;
+                }, 1000);
+            });
+
+            useMyPourButton.addEventListener('click', () => {
+                if (!myPourPreset) return;
+                pulseHaptic(14);
+                applyState(myPourPreset);
+                showToast(`${myPourPreset.name} loaded`);
+            });
+
+            myPourNameInput.addEventListener('change', () => {
+                if (!myPourPreset) return;
+                const value = myPourNameInput.value.trim();
+                myPourPreset.name = value || 'My Pour';
+                localStorage.setItem('myPourPreset', JSON.stringify(myPourPreset));
+                updateMyPourButtonState();
             });
 
             // Input unit toggle handler

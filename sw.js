@@ -1,8 +1,12 @@
-const CACHE_NAME = 'perfect-proof-v1';
+const CACHE_NAME = 'perfect-proof-v2';
 const urlsToCache = [
   './',
   './perfect-proof.html',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon.svg',
+  './icons/icon-192.svg',
+  './icons/icon-512.svg',
+  './icons/apple-touch-icon.svg'
 ];
 
 self.addEventListener('install', event => {
