@@ -2,6 +2,8 @@
 
 A beautiful, fast whiskey dilution calculator for achieving your perfect pour. Calculate exactly how much water to add to any whiskey to reach your desired proof.
 
+<img width="383" height="975" alt="image" src="https://github.com/user-attachments/assets/1b5a3128-f75a-45c6-b83f-10684ec5db55" />
+
 ## Features
 
 🧮 **Precise Calculations**
